@@ -32,3 +32,38 @@ class Actions:
             print(f"  - {command}")
         print()
         return True
+    @staticmethod
+    def historik(game, list_of_words, number_of_parameters):
+        # Vérifie si le nombre d'arguments est correct
+        if len(list_of_words) != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+
+        # Récupère le joueur actuel et affiche l'historique
+        player = game.player
+        print("\nHistorique des pièces parcourues :")
+        print(player.get_history())
+        return True
+
+    @staticmethod
+    def back(game, list_of_words, number_of_parameters):
+        # Vérifie si le nombre d'arguments est correct
+        if len(list_of_words) != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+
+        player = game.player
+        # Besoin d'au moins deux pièces dans l'historique pour revenir en arrière
+        if len(player.history) < 2:
+            print("\nAucune pièce précédente à laquelle revenir.\n")
+            return False
+
+        # Retire la pièce courante de l'historique et revient à la précédente
+        player.history.pop()
+        previous_room = player.history[-1]
+        player.current_room = previous_room
+        print(f"\nVous revenez à '{player.current_room.name}'")
+        print(player.current_room.get_long_description())
+        return True

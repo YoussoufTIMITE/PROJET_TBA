@@ -17,6 +17,8 @@ class Game:
         self.commands["help"] = Command("help", " : afficher cette aide", Actions.help, 0)
         self.commands["quit"] = Command("quit", " : quitter le jeu", Actions.quit, 0)
         self.commands["go"] = Command("go", " <direction> : se déplacer", Actions.go, 1)
+        self.commands["historik"] = Command("historik", " : afficher l'historique des pièces", Actions.historik, 0)
+        self.commands["back"] = Command("back", " : revenir à la pièce précédente", Actions.back, 0)
 
         # Rooms
         entree = Room("Entrée", "à l’entrée de votre univers. Une lourde porte se referme derrière vous.")
@@ -45,7 +47,8 @@ class Game:
         name = input("Entrez votre nom: ")
         self.player = Player(name)
         self.player.current_room = entree
-        self.player.history.append(entree.name)
+        # stocke l'objet Room dans l'historique
+        self.player.history.append(entree)
 
     def print_welcome(self):
         print(f"\nBienvenue {self.player.name} dans votre univers !")

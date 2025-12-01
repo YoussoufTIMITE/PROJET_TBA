@@ -40,7 +40,13 @@ class Player:
 
         # Déplacement valide
         self.current_room = next_room
-        self.history.append(next_room.name)
+        self.history.append(next_room)
         print(f"\nVous vous déplacez vers {real_dir}...\n")
         print(self.current_room.get_long_description())
         return True
+
+    def get_history(self):
+        if not self.history:
+            return "(aucune pièce visitée)"
+        # Retourne une chaîne lisible des noms de pièces visitées
+        return " -> ".join([room.name for room in self.history])
