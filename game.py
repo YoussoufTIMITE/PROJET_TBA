@@ -90,13 +90,14 @@ class Game:
         self.commands[command_word].execute(self, words)
 
     def play(self):
+        """Lance l'action principale associée à l'objet"""
         self.setup()
         self.print_welcome()
         while not self.finished:
             self.process_command(input("> "))
 
 def main():
+    """ Point d'entrée principal du programme."""
     Game().play()
-
 if __name__ == "__main__":
     main()
