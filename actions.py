@@ -72,7 +72,7 @@ class Actions:
     
     @staticmethod
     def look(game, list_of_words, number_of_parameters):
-        """Observer l'environnement"""
+        """ Permet au joueur d'examiner son environnement ou un objet spécifique."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
@@ -83,7 +83,7 @@ class Actions:
     
     @staticmethod
     def take(game, list_of_words, number_of_parameters):
-        """Prendre un objet"""
+        """Permet au joueur de ramasser un objet."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
