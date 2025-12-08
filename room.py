@@ -7,8 +7,35 @@ class Room:
         self.name = name
         self.description = description
         self.exits = {}  # dictionnaire direction → Room
+        self.items = []  # inventaire de la pièce
 
     def get_long_description(self):
         exits_str = ", ".join([d for d, r in self.exits.items() if r is not None])
-        return f"\n{self.name}\n{self.description}\nSorties disponibles : {exits_str}\n"
+        description = f"\n{self.name}\n{self.description}\nSorties disponibles : {exits_str}"
+        
+        # Ajouter les items visibles dans la pièce
+        if self.items:
+            items_str = ", ".join([item.name for item in self.items])
+            description += f"\nObjets visibles : {items_str}"
+        
+        description += "\n"
+        return description
+    
+    def add_item(self, item):
+        """Ajoute un objet à la pièce"""
+        self.items.append(item)
+    
+    def remove_item(self, item):
+        """Retire un objet de la pièce"""
+        if item in self.items:
+            self.items.remove(item)
+            return True
+        return False
+    
+    def get_item_by_name(self, name):
+        """Retourne l'objet correspondant au nom ou None"""
+        for item in self.items:
+            if item.name.lower() == name.lower():
+                return item
+        return None
 

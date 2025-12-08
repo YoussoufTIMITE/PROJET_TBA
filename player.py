@@ -5,6 +5,7 @@ class Player:
         self.name = name
         self.current_room = None
         self.history = []
+        self.inventory = []  # inventaire du joueur
         # dictionnaire alias directions
         self.direction_aliases = {
             "N": ["N", "NORD", "NORTH"],
@@ -50,3 +51,28 @@ class Player:
             return "(aucune pièce visitée)"
         # Retourne une chaîne lisible des noms de pièces visitées
         return " -> ".join([room.name for room in self.history])
+    
+    def add_item_to_inventory(self, item):
+        """Ajoute un objet à l'inventaire du joueur"""
+        self.inventory.append(item)
+    
+    def remove_item_from_inventory(self, item):
+        """Retire un objet de l'inventaire du joueur"""
+        if item in self.inventory:
+            self.inventory.remove(item)
+            return True
+        return False
+    
+    def get_item_from_inventory(self, name):
+        """Retourne l'objet correspondant au nom ou None"""
+        for item in self.inventory:
+            if item.name.lower() == name.lower():
+                return item
+        return None
+    
+    def get_inventory_display(self):
+        """Retourne une chaîne affichant l'inventaire"""
+        if not self.inventory:
+            return "Votre inventaire est vide."
+        items_str = ", ".join([item.name for item in self.inventory])
+        return f"Inventaire : {items_str}"

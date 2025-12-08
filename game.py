@@ -3,6 +3,7 @@ from room import Room
 from player import Player
 from command import Command
 from actions import Actions
+from item import Item
 
 class Game:
 
@@ -19,6 +20,10 @@ class Game:
         self.commands["go"] = Command("go", " <direction> : se déplacer", Actions.go, 1)
         self.commands["historik"] = Command("historik", " : afficher l'historique des pièces", Actions.historik, 0)
         self.commands["back"] = Command("back", " : revenir à la pièce précédente", Actions.back, 0)
+        self.commands["look"] = Command("look", " : observer l'environnement", Actions.look, 0)
+        self.commands["take"] = Command("take", " <objet> : prendre un objet", Actions.take, 1)
+        self.commands["drop"] = Command("drop", " <objet> : poser un objet", Actions.drop, 1)
+        self.commands["inventory"] = Command("inventory", " : vérifier son inventaire", Actions.inventory, 0)
 
         # Rooms
         entree = Room("Entrée", "à l’entrée de votre univers. Une lourde porte se referme derrière vous.")
@@ -32,6 +37,21 @@ class Game:
 
         self.rooms.extend([entree, hall, bureau, mezzanine,
                            souterrain, cave, labyrinthe, chambre_gardien])
+
+        # Items - ajout d'objets dans les pièces
+        cle = Item("clé", "une vieille clé rouillée")
+        lampe = Item("lampe", "une lampe de poche")
+        livre = Item("livre", "un vieux livre poussiéreux")
+        torche = Item("torche", "une torche éteinte")
+        corde = Item("corde", "une corde solide")
+        pioche = Item("pioche", "une pioche usée")
+        
+        entree.add_item(cle)
+        hall.add_item(lampe)
+        bureau.add_item(livre)
+        mezzanine.add_item(torche)
+        souterrain.add_item(corde)
+        cave.add_item(pioche)
 
         # Exits
         entree.exits = {"N": hall}
