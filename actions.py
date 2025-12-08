@@ -104,7 +104,7 @@ class Actions:
     
     @staticmethod
     def drop(game, list_of_words, number_of_parameters):
-        """Poser un objet"""
+        """ Permet au joueur de déposer un objet de son inventaire dans l'environnement."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
