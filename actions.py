@@ -165,7 +165,8 @@ class Actions:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
         
-        print("\nVous attendez un moment...\n")
+        print("\nVous attendez un moment... Les PNJ se déplacent.\n")
+        game.move_npcs()
         return True
     
     @staticmethod
@@ -195,9 +196,16 @@ class Actions:
         
         if not npc.is_alive:
             current_room.remove_npc(npc)
-            if npc.name == "Gardien":
-                print("Félicitations ! Vous avez vaincu le Gardien et gagné le jeu !\n")
-                game.finished = True
+            if npc.name == "Fantome":
+                game.ghost_defeated = True
+                print("Le Fantôme est vaincu ! Vous pouvez maintenant affronter le Gardien.")
+            elif npc.name == "Gardien":
+                if game.ghost_defeated:
+                    print("Félicitations ! Vous avez vaincu le Gardien et gagné le jeu !")
+                    game.finished = True
+                else:
+                    print("Vous devez d'abord vaincre le Fantôme avant le Gardien !")
+                    # Remettre le Gardien en vie ou quelque chose, mais pour simplicité, juste message
             return True
         
         # Contre-attaque du PNJ
@@ -220,4 +228,95 @@ class Actions:
         
         player = game.player
         print(f"\nÉtat de {player.name} : {player.health} PV\n")
+        return True
+    
+    @staticmethod
+    def déplacer(game, list_of_words, number_of_parameters):
+        """Déplace un PNJ vers une pièce spécifique"""
+        if len(list_of_words) != number_of_parameters + 1:
+            print("\nLa commande 'déplacer' prend 2 paramètres : <pnj> <pièce>.\n")
+            return False
+        
+        npc_name = list_of_words[1]
+        room_name = list_of_words[2]
+        
+        # Trouver le PNJ dans toutes les pièces
+        npc = None
+        current_room = None
+        for room in game.rooms:
+            npc = room.get_npc_by_name(npc_name)
+            if npc:
+                current_room = room
+                break
+        
+        if not npc:
+            print(f"\nLe PNJ '{npc_name}' n'existe pas.\n")
+            return False
+        
+        # Trouver la pièce cible
+        target_room = None
+        for room in game.rooms:
+            if room.name.lower() == room_name.lower():
+                target_room = room
+                break
+        
+        if not target_room:
+            print(f"\nLa pièce '{room_name}' n'existe pas.\n")
+            return False
+        
+        if current_room:
+            current_room.remove_npc(npc)
+        target_room.add_npc(npc)
+        
+        print(f"\n{npc.name} a été déplacé vers {target_room.name}.\n")
+        return True
+    
+    @staticmethod
+    def listPNJ(game, list_of_words, number_of_parameters):
+        """Liste tous les PNJ et leur position"""
+        if len(list_of_words) != number_of_parameters + 1:
+            print(MSG0.format(command_word=list_of_words[0]))
+            return False
+        
+        print("\nListe des PNJ :")
+        for room in game.rooms:
+            for npc in room.npcs:
+                status = "vivant" if npc.is_alive else "mort"
+                print(f"  - {npc.name} ({status}) dans {room.name}")
+        print()
+        return True
+    
+    @staticmethod
+    def use(game, list_of_words, number_of_parameters):
+        """Utiliser un objet de l'inventaire"""
+        if len(list_of_words) != number_of_parameters + 1:
+            print(MSG1.format(command_word=list_of_words[0]))
+            return False
+        
+        item_name = list_of_words[1]
+        player = game.player
+        
+        item = player.get_item_from_inventory(item_name)
+        if item is None:
+            print(f"\nVous ne possédez pas '{item_name}'.\n")
+            return False
+        
+        # Effets selon l'objet
+        if item.name.lower() == "clé":
+            print("\nLa clé brille. Elle pourrait ouvrir une porte secrète, mais ici, elle vous rappelle que la vraie clé est de vaincre les PNJ dans l'ordre.\n")
+        elif item.name.lower() == "lampe":
+            print("\nLa lampe éclaire les recoins sombres. Vous voyez des inscriptions murales : 'Le Fantôme hante les tunnels, le Gardien protège la sortie.'\n")
+        elif item.name.lower() == "livre":
+            print("\nLe livre contient des légendes anciennes : 'Pour sortir, bats le Fantôme spectral, puis le Gardien immortel.'\n")
+        elif item.name.lower() == "torche":
+            print("\nLa torche flambe vivement. Sa chaleur vous revigore (+5 PV).\n")
+            player.health = min(100, player.health + 5)
+        elif item.name.lower() == "corde":
+            print("\nLa corde vous permet de grimper à un point élevé. De là, vous voyez les mouvements des PNJ.\n")
+            Actions.listPNJ(game, ["listPNJ"], 0)
+        elif item.name.lower() == "pioche":
+            print("\nLa pioche creuse le sol. Vous trouvez une inscription : 'Le Gardien ne tombe que si le Fantôme est vaincu.'\n")
+        else:
+            print(f"\nVous utilisez {item.name}, mais rien ne se passe.\n")
+        
         return True

@@ -14,6 +14,7 @@ class Game:
         self.rooms = []
         self.commands = {}
         self.player = None
+        self.ghost_defeated = False
 
     def setup(self):
         # Commands
@@ -30,6 +31,9 @@ class Game:
         self.commands["wait"] = Command("wait", " : attendre un tour (fait bouger les PNJ)", Actions.wait, 0)
         self.commands["attack"] = Command("attack", " <pnj> : attaquer un PNJ", Actions.attack, 1)
         self.commands["status"] = Command("status", " : vérifier votre état", Actions.status, 0)
+        self.commands["déplacer"] = Command("déplacer", " <pnj> <pièce> : déplacer un PNJ vers une pièce", Actions.déplacer, 2)
+        self.commands["listPNJ"] = Command("listPNJ", " : lister tous les PNJ et leur position", Actions.listPNJ, 0)
+        self.commands["use"] = Command("use", " <objet> : utiliser un objet de l'inventaire", Actions.use, 1)
 
         # Rooms
         entree = Room("Entrée", "à l’entrée de votre univers. Une lourde porte se referme derrière vous.")
@@ -60,10 +64,11 @@ class Game:
         cave.add_item(pioche)
 
         # NPCs
-        gardien = NPC("Gardien", "un homme âgé avec une clé", ["Bienvenue dans la chambre du gardien. Prenez garde aux pièges.", "La clé que vous cherchez est cachée quelque part.", "Soyez prudent dans les souterrains."])
+        gardien = NPC("Gardien", "un homme âgé avec une clé", ["Tu as vaincu le Fantôme ? Prouve-le en me battant.", "Je suis le dernier obstacle.", "Vaincs-moi pour gagner !"])
         gardien.health = 100  # plus de vie pour le boss
-        marchand = NPC("Marchand", "un commerçant ambulant", ["J'ai des objets rares à vendre, mais pas d'argent ici.", "Que cherchez-vous exactement ?", "Désolé, je n'ai plus rien à offrir."])
-        fantome = NPC("Fantôme", "une apparition translucide", ["Ooooooh, qui ose troubler mon repos ?", "Je hante ces lieux depuis des siècles.", "Laissez-moi en paix !"])
+        marchand = NPC("Marchand", "un commerçant ambulant", ["Trouve le Fantôme dans le Souterrain et bats-le.", "Puis cherche le Gardien dans sa Chambre pour le vaincre.", "Bats les deux pour t'échapper !"])
+        fantome = NPC("Fantome", "une apparition translucide", ["Je suis l'esprit du labyrinthe. Bats-moi pour avancer.", "Le Gardien t'attend après moi.", "Vaincs-nous deux pour gagner."])
+        fantome.health = 30  # moins de vie
 
         chambre_gardien.add_npc(gardien)
         hall.add_npc(marchand)
@@ -97,10 +102,12 @@ class Game:
                         if next_room is not None:
                             room.remove_npc(npc)
                             next_room.add_npc(npc)
+                            print(f"{npc.name} se déplace de {room.name} vers {next_room.name}.")
 
     def print_welcome(self):
         print(f"\nBienvenue {self.player.name} dans cette aventure mystérieuse !")
-        print("Vous êtes piégé dans un labyrinthe ancien. Trouvez la clé, explorez, parlez aux PNJ et battez le Gardien pour vous échapper.")
+        print("Vous êtes piégé dans un labyrinthe. Parlez au Marchand pour des indices.")
+        print("Vainquez d'abord le Fantôme, puis le Gardien pour gagner !")
         print("Entrez 'help' si vous avez besoin d'aide.")
         print(self.player.current_room.get_long_description())
 
@@ -117,8 +124,6 @@ class Game:
             return
 
         self.commands[command_word].execute(self, words)
-        # Déplacer les PNJ après chaque commande
-        self.move_npcs()
 
     def play(self):
         """Lance l'action principale associée à l'objet"""
