@@ -3,6 +3,7 @@ import pytest
 from player import Player
 from room import Room
 from actions import Actions
+from npc import NPC
 
 
 class DummyGame:
@@ -58,3 +59,28 @@ def test_back_no_previous():
     game = DummyGame(p)
     # back should fail because there's no previous room
     assert Actions.back(game, ["back"], 0) is False
+
+
+def test_talk_to_npc():
+    room = Room("TestRoom", "desc")
+    npc = NPC("TestNPC", "desc", ["Hello!", "How are you?"])
+    room.add_npc(npc)
+    
+    p = Player("TestPlayer")
+    p.current_room = room
+    
+    game = DummyGame(p)
+    # talk should succeed and cycle dialogues
+    assert Actions.talk(game, ["talk", "TestNPC"], 1) is True
+    assert Actions.talk(game, ["talk", "TestNPC"], 1) is True
+
+
+def test_talk_to_nonexistent_npc():
+    room = Room("TestRoom", "desc")
+    
+    p = Player("TestPlayer")
+    p.current_room = room
+    
+    game = DummyGame(p)
+    # talk should fail
+    assert Actions.talk(game, ["talk", "Ghost"], 1) is False

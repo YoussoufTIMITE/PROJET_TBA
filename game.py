@@ -4,6 +4,8 @@ from player import Player
 from command import Command
 from actions import Actions
 from item import Item
+from npc import NPC
+import random
 
 class Game:
 
@@ -24,6 +26,10 @@ class Game:
         self.commands["take"] = Command("take", " <objet> : prendre un objet", Actions.take, 1)
         self.commands["drop"] = Command("drop", " <objet> : poser un objet", Actions.drop, 1)
         self.commands["inventory"] = Command("inventory", " : vérifier son inventaire", Actions.inventory, 0)
+        self.commands["talk"] = Command("talk", " <pnj> : parler à un PNJ", Actions.talk, 1)
+        self.commands["wait"] = Command("wait", " : attendre un tour (fait bouger les PNJ)", Actions.wait, 0)
+        self.commands["attack"] = Command("attack", " <pnj> : attaquer un PNJ", Actions.attack, 1)
+        self.commands["status"] = Command("status", " : vérifier votre état", Actions.status, 0)
 
         # Rooms
         entree = Room("Entrée", "à l’entrée de votre univers. Une lourde porte se referme derrière vous.")
@@ -53,6 +59,16 @@ class Game:
         souterrain.add_item(corde)
         cave.add_item(pioche)
 
+        # NPCs
+        gardien = NPC("Gardien", "un homme âgé avec une clé", ["Bienvenue dans la chambre du gardien. Prenez garde aux pièges.", "La clé que vous cherchez est cachée quelque part.", "Soyez prudent dans les souterrains."])
+        gardien.health = 100  # plus de vie pour le boss
+        marchand = NPC("Marchand", "un commerçant ambulant", ["J'ai des objets rares à vendre, mais pas d'argent ici.", "Que cherchez-vous exactement ?", "Désolé, je n'ai plus rien à offrir."])
+        fantome = NPC("Fantôme", "une apparition translucide", ["Ooooooh, qui ose troubler mon repos ?", "Je hante ces lieux depuis des siècles.", "Laissez-moi en paix !"])
+
+        chambre_gardien.add_npc(gardien)
+        hall.add_npc(marchand)
+        souterrain.add_npc(fantome)
+
         # Exits
         entree.exits = {"N": hall}
         hall.exits = {"S": None, "E": bureau, "U": mezzanine, "O": labyrinthe}
@@ -70,8 +86,21 @@ class Game:
         # stocke l'objet Room dans l'historique
         self.player.history.append(entree)
 
+    def move_npcs(self):
+        """Déplace les PNJ de manière aléatoire, sauf dans la pièce actuelle du joueur"""
+        for room in self.rooms:
+            if room != self.player.current_room:
+                for npc in room.npcs[:]:  # copie pour éviter modification pendant itération
+                    if room.exits and random.random() < 0.2:  # 20% chance de bouger
+                        direction = random.choice(list(room.exits.keys()))
+                        next_room = room.exits[direction]
+                        if next_room is not None:
+                            room.remove_npc(npc)
+                            next_room.add_npc(npc)
+
     def print_welcome(self):
-        print(f"\nBienvenue {self.player.name} dans votre univers !")
+        print(f"\nBienvenue {self.player.name} dans cette aventure mystérieuse !")
+        print("Vous êtes piégé dans un labyrinthe ancien. Trouvez la clé, explorez, parlez aux PNJ et battez le Gardien pour vous échapper.")
         print("Entrez 'help' si vous avez besoin d'aide.")
         print(self.player.current_room.get_long_description())
 
@@ -88,6 +117,8 @@ class Game:
             return
 
         self.commands[command_word].execute(self, words)
+        # Déplacer les PNJ après chaque commande
+        self.move_npcs()
 
     def play(self):
         """Lance l'action principale associée à l'objet"""

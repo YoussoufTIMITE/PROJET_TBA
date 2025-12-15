@@ -6,6 +6,16 @@ class Player:
         self.current_room = None
         self.history = []
         self.inventory = []  # inventaire du joueur
+        self.health = 100  # points de vie
+        # dictionnaire alias directions
+        self.direction_aliases = {
+            "N": ["N", "NORD", "NORTH"],
+            "E": ["E", "EST", "EAST"],
+            "S": ["S", "SUD", "SOUTH"],
+            "O": ["O", "OUEST", "WEST"],
+            "U": ["U", "UP", "HAUT"],
+            "D": ["D", "DOWN", "BAS"]
+        }
         # dictionnaire alias directions
         self.direction_aliases = {
             "N": ["N", "NORD", "NORTH"],
@@ -43,7 +53,7 @@ class Player:
         self.current_room = next_room
         self.history.append(next_room)
         print(f"\nVous vous déplacez vers {real_dir}...\n")
-        print(self.current_room.get_long_description())
+        # Ne pas print la description ici, le faire dans Actions.go après mouvement des PNJ
         return True
 
     def get_history(self):
@@ -76,3 +86,10 @@ class Player:
             return "Votre inventaire est vide."
         items_str = ", ".join([item.name for item in self.inventory])
         return f"Inventaire : {items_str}"
+    
+    def take_damage(self, damage):
+        """Inflige des dégâts au joueur"""
+        self.health -= damage
+        if self.health <= 0:
+            return f"{self.name} est mort !"
+        return f"{self.name} a {self.health} PV restants."
