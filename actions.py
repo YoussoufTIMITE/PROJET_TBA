@@ -17,8 +17,8 @@ class Actions:
         if player.move(list_of_words[1]):
             # Déplacer les PNJ après le mouvement du joueur
             game.move_npcs()
-            # Vérifier les quêtes de lieux
-            for quest in game.quests:
+            # Vérifier les quêtes de lieux (s'il y en a)
+            for quest in getattr(game, 'quests', []):
                 quest.check_completion(game)
             # Afficher la description mise à jour
             print(player.current_room.get_long_description())
@@ -111,8 +111,8 @@ class Actions:
         current_room.remove_item(item)
         player.add_item_to_inventory(item)
         print(f"\nVous avez pris : {item.name}\n")
-        # Vérifier les quêtes d'objets
-        for quest in game.quests:
+        # Vérifier les quêtes d'objets (s'il y en a)
+        for quest in getattr(game, 'quests', []):
             quest.check_completion(game)
         return True
 
@@ -164,8 +164,8 @@ class Actions:
             return False
 
         print(f"\n{npc.talk()}\n")
-        # Vérifier les quêtes de PNJ
-        for quest in game.quests:
+        # Vérifier les quêtes de PNJ (s'il y en a)
+        for quest in getattr(game, 'quests', []):
             quest.check_completion(game)
         return True
 
@@ -299,7 +299,7 @@ class Actions:
             return False
 
         print("\n=== Quêtes ===")
-        for quest in game.quests:
+        for quest in getattr(game, 'quests', []):
             status = "✓ Complétée" if quest.completed else "En cours"
             print(f"- {quest.name}: {quest.description} [{status}]")
         print("===============\n")
