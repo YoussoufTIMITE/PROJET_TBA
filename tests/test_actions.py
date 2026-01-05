@@ -4,12 +4,14 @@ from player import Player
 from room import Room
 from actions import Actions
 from npc import NPC
+from item import Item
 
 
 class DummyGame:
     def __init__(self, player):
         self.player = player
         self.commands = {}
+        self.quests = []  # Pour éviter les erreurs dans check_completion
 
 
 def test_move_and_history_and_get_history():
@@ -65,10 +67,10 @@ def test_talk_to_npc():
     room = Room("TestRoom", "desc")
     npc = NPC("TestNPC", "desc", ["Hello!", "How are you?"])
     room.add_npc(npc)
-    
+
     p = Player("TestPlayer")
     p.current_room = room
-    
+
     game = DummyGame(p)
     # talk should succeed and cycle dialogues
     assert Actions.talk(game, ["talk", "TestNPC"], 1) is True
@@ -77,10 +79,101 @@ def test_talk_to_npc():
 
 def test_talk_to_nonexistent_npc():
     room = Room("TestRoom", "desc")
-    
+
     p = Player("TestPlayer")
     p.current_room = room
-    
+
     game = DummyGame(p)
     # talk should fail
     assert Actions.talk(game, ["talk", "Ghost"], 1) is False
+
+
+def test_take_item():
+    room = Room("TestRoom", "desc")
+    item = Item("clé", "une clé")
+    room.add_item(item)
+
+    p = Player("TestPlayer")
+    p.current_room = room
+
+    game = DummyGame(p)
+    # take should succeed
+    assert Actions.take(game, ["take", "clé"], 1) is True
+    assert item in p.inventory
+    assert item not in room.items
+
+
+def test_take_nonexistent_item():
+    room = Room("TestRoom", "desc")
+
+    p = Player("TestPlayer")
+    p.current_room = room
+
+    game = DummyGame(p)
+    # take should fail
+    assert Actions.take(game, ["take", "clé"], 1) is False
+
+
+def test_drop_item():
+    room = Room("TestRoom", "desc")
+    item = Item("clé", "une clé")
+
+    p = Player("TestPlayer")
+    p.add_item_to_inventory(item)
+    p.current_room = room
+
+    game = DummyGame(p)
+    # drop should succeed
+    assert Actions.drop(game, ["drop", "clé"], 1) is True
+    assert item not in p.inventory
+    assert item in room.items
+
+
+def test_drop_nonexistent_item():
+    room = Room("TestRoom", "desc")
+
+    p = Player("TestPlayer")
+    p.current_room = room
+
+    game = DummyGame(p)
+    # drop should fail
+    assert Actions.drop(game, ["drop", "clé"], 1) is False
+
+
+def test_inventory():
+    p = Player("TestPlayer")
+    item = Item("clé", "une clé")
+    p.add_item_to_inventory(item)
+
+    game = DummyGame(p)
+    # inventory should succeed
+    assert Actions.inventory(game, ["inventory"], 0) is True
+
+
+def test_attack_npc():
+    room = Room("TestRoom", "desc")
+    npc = NPC("TestNPC", "desc", ["Hello!"])
+    npc.health = 50
+    room.add_npc(npc)
+
+    p = Player("TestPlayer")
+    p.current_room = room
+    p.health = 100
+
+    game = DummyGame(p)
+    # attack should succeed and damage npc
+    assert Actions.attack(game, ["attack", "TestNPC"], 1) is True
+    assert npc.health == 30  # 50 - 20
+    assert p.health == 85  # 100 - 15
+
+
+def test_attack_nonexistent_npc():
+    room = Room("TestRoom", "desc")
+
+    p = Player("TestPlayer")
+    p.current_room = room
+
+    game = DummyGame(p)
+    # attack should fail
+    assert Actions.attack(game, ["attack", "Ghost"], 1) is False
+

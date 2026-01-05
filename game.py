@@ -57,7 +57,7 @@ class Game:
         torche = Item("torche", "une torche éteinte")
         corde = Item("corde", "une corde solide")
         pioche = Item("pioche", "une pioche usée")
-        
+
         entree.add_item(cle)
         hall.add_item(lampe)
         bureau.add_item(livre)
@@ -146,3 +146,4 @@ def main():
     Game().play()
 if __name__ == "__main__":
     main()
+

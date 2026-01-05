@@ -1,16 +1,26 @@
 # TBA
 
-Ce repo contient la première version (minimale) du jeu d’aventure TBA.
+Ce repo contient le jeu d’aventure TBA, un jeu textuel où le joueur explore un labyrinthe, collecte des objets, interagit avec des PNJ et accomplit des quêtes pour gagner.
 
-Les lieux sont au nombre de 6. Il n'y a pas encore d’objets ni de personnages autres que le joueur et très peu d’interactions. Cette première version sert de base à ce qui va suivre, et sera améliorée au fur et à mesure.
-
+Le jeu comprend plusieurs pièces interconnectées, des objets à ramasser, des personnages non-joueurs (PNJ) avec lesquels parler ou combattre, et un système de quêtes. Le but est de vaincre le Fantôme puis le Gardien pour s'échapper.
 
 ## Structuration
 
-Il y a pour le moment 5 modules contenant chacun une classe.
+Le projet est organisé en plusieurs modules :
 
-- `game.py` / `Game` : description de l'environnement, interface avec le joueur ;
-- `room.py` / `Room` : propriétés génériques d'un lieu  ;
-- `player.py` / `Player` : le joueur ;
-- `command.py` / `Command` : les consignes données par le joueur ;
-- `actions.py` / `Action` : les interactions entre .
+- `game.py` / `Game` : classe principale gérant l'environnement, la configuration du jeu et la boucle principale ;
+- `room.py` / `Room` : propriétés d'un lieu (nom, description, sorties, objets, PNJ) ;
+- `player.py` / `Player` : le joueur (position, inventaire, historique, santé) ;
+- `command.py` / `Command` : les commandes disponibles (nom, description, action associée) ;
+- `actions.py` / `Actions` : les interactions et actions du joueur (se déplacer, prendre des objets, parler, combattre, etc.) ;
+- `item.py` / `Item` : les objets du jeu (nom, description) ;
+- `npc.py` / `NPC` : les personnages non-joueurs (nom, description, dialogues, santé) ;
+- `quest.py` / `Quest` : les quêtes (nom, description, conditions, récompenses).
+
+## Comment jouer
+
+Lancez le jeu avec `python game.py`. Entrez des commandes comme `go N`, `take clé`, `talk Marchand`, `attack Fantome`, etc. Tapez `help` pour la liste des commandes.
+
+## Tests
+
+Les tests sont dans le dossier `tests/`. Lancez-les avec `pytest`.

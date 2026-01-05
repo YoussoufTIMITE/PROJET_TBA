@@ -3,9 +3,11 @@ MSG1 = "\nLa commande '{command_word}' prend 1 seul paramètre.\n"
 MSG_WRONG_PARAMS = "\nLa commande '{command_word}' prend {expected} paramètre(s).\n"
 
 class Actions:
+    """Classe contenant toutes les actions disponibles dans le jeu."""
 
     @staticmethod
     def go(game, list_of_words, number_of_parameters):
+        """Déplace le joueur dans une direction donnée."""
         player = game.player
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
@@ -42,7 +44,7 @@ class Actions:
             print(f"  - {command}")
         print()
         return True
-    
+
     @staticmethod
     def historik(game, list_of_words, number_of_parameters):
         # Vérifie si le nombre d'arguments est correct
@@ -78,34 +80,34 @@ class Actions:
         print(f"\nVous revenez à '{player.current_room.name}'")
         print(player.current_room.get_long_description())
         return True
-    
+
     @staticmethod
     def look(game, list_of_words, number_of_parameters):
         """ Permet au joueur d'examiner son environnement ou un objet spécifique."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         player = game.player
         print(player.current_room.get_long_description())
         return True
-    
+
     @staticmethod
     def take(game, list_of_words, number_of_parameters):
         """Permet au joueur de ramasser un objet."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
-        
+
         item_name = list_of_words[1]
         player = game.player
         current_room = player.current_room
-        
+
         item = current_room.get_item_by_name(item_name)
         if item is None:
             print(f"\nL'objet '{item_name}' n'est pas ici.\n")
             return False
-        
+
         current_room.remove_item(item)
         player.add_item_to_inventory(item)
         print(f"\nVous avez pris : {item.name}\n")
@@ -113,96 +115,96 @@ class Actions:
         for quest in game.quests:
             quest.check_completion(game)
         return True
-    
+
     @staticmethod
     def drop(game, list_of_words, number_of_parameters):
         """ Permet au joueur de déposer un objet de son inventaire dans l'environnement."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
-        
+
         item_name = list_of_words[1]
         player = game.player
-        
+
         item = player.get_item_from_inventory(item_name)
         if item is None:
             print(f"\nVous ne possédez pas '{item_name}'.\n")
             return False
-        
+
         player.remove_item_from_inventory(item)
         player.current_room.add_item(item)
         print(f"\nVous avez posé : {item.name}\n")
         return True
-    
+
     @staticmethod
     def inventory(game, list_of_words, number_of_parameters):
         """Vérifier son inventaire"""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         player = game.player
         print(f"\n{player.get_inventory_display()}\n")
         return True
-    
+
     @staticmethod
     def talk(game, list_of_words, number_of_parameters):
         """Permet au joueur de parler à un PNJ."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
-        
+
         npc_name = list_of_words[1]
         player = game.player
         current_room = player.current_room
-        
+
         npc = current_room.get_npc_by_name(npc_name)
         if npc is None:
             print(f"\nLe PNJ '{npc_name}' n'est pas ici.\n")
             return False
-        
+
         print(f"\n{npc.talk()}\n")
         # Vérifier les quêtes de PNJ
         for quest in game.quests:
             quest.check_completion(game)
         return True
-    
+
     @staticmethod
     def wait(game, list_of_words, number_of_parameters):
         """Permet au joueur d'attendre un tour, faisant bouger les PNJ."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         print("\nVous attendez un moment... Les PNJ se déplacent.\n")
         game.move_npcs()
         return True
-    
+
     @staticmethod
     def attack(game, list_of_words, number_of_parameters):
         """Permet au joueur d'attaquer un PNJ."""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
-        
+
         npc_name = list_of_words[1]
         player = game.player
         current_room = player.current_room
-        
+
         npc = current_room.get_npc_by_name(npc_name)
         if npc is None:
             print(f"\nLe PNJ '{npc_name}' n'est pas ici.\n")
             return False
-        
+
         if not npc.is_alive:
             print(f"\n{npc.name} est déjà vaincu.\n")
             return False
-        
+
         # Attaque du joueur
         damage_to_npc = 20  # dégâts fixes pour simplicité
         result = npc.take_damage(damage_to_npc)
         print(f"\nVous attaquez {npc.name} et infligez {damage_to_npc} dégâts. {result}\n")
-        
+
         if not npc.is_alive:
             current_room.remove_npc(npc)
             if npc.name == "Fantome":
@@ -216,36 +218,36 @@ class Actions:
                     print("Vous devez d'abord vaincre le Fantôme avant le Gardien !")
                     # Remettre le Gardien en vie ou quelque chose, mais pour simplicité, juste message
             return True
-        
+
         # Contre-attaque du PNJ
         damage_to_player = 15
         result_player = player.take_damage(damage_to_player)
         print(f"{npc.name} contre-attaque et vous inflige {damage_to_player} dégâts. {result_player}\n")
-        
+
         if player.health <= 0:
             print("Vous êtes mort ! Game over.\n")
             game.finished = True
-        
+
         return True
-    
+
     @staticmethod
     def status(game, list_of_words, number_of_parameters):
         """Affiche l'état du joueur"""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         player = game.player
         print(f"\nÉtat de {player.name} : {player.health} PV\n")
         return True
-    
+
     @staticmethod
     def listPNJ(game, list_of_words, number_of_parameters):
         """Liste tous les PNJ et leur position"""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         print("\nListe des PNJ :")
         for room in game.rooms:
             for npc in room.npcs:
@@ -253,22 +255,22 @@ class Actions:
                 print(f"  - {npc.name} ({status}) dans {room.name}")
         print()
         return True
-    
+
     @staticmethod
     def use(game, list_of_words, number_of_parameters):
         """Utiliser un objet de l'inventaire"""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG1.format(command_word=list_of_words[0]))
             return False
-        
+
         item_name = list_of_words[1]
         player = game.player
-        
+
         item = player.get_item_from_inventory(item_name)
         if item is None:
             print(f"\nVous ne possédez pas '{item_name}'.\n")
             return False
-        
+
         # Effets selon l'objet
         if item.name.lower() == "clé":
             print("\nLa clé brille. Elle pourrait ouvrir une porte secrète, mais ici, elle vous rappelle que la vraie clé est de vaincre les PNJ dans l'ordre.\n")
@@ -286,16 +288,16 @@ class Actions:
             print("\nLa pioche creuse le sol. Vous trouvez une inscription : 'Le Gardien ne tombe que si le Fantôme est vaincu.'\n")
         else:
             print(f"\nVous utilisez {item.name}, mais rien ne se passe.\n")
-        
+
         return True
-    
+
     @staticmethod
     def quests(game, list_of_words, number_of_parameters):
         """Affiche la liste des quêtes"""
         if len(list_of_words) != number_of_parameters + 1:
             print(MSG0.format(command_word=list_of_words[0]))
             return False
-        
+
         print("\n=== Quêtes ===")
         for quest in game.quests:
             status = "✓ Complétée" if quest.completed else "En cours"
