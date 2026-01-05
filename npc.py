@@ -9,6 +9,7 @@ class NPC:
         self.dialogue_index = 0
         self.health = 50  # points de vie
         self.is_alive = True
+        self.talked = False
 
     def talk(self):
         """Retourne le dialogue actuel et passe au suivant"""
@@ -16,6 +17,7 @@ class NPC:
             return f"{self.name} est mort et ne peut pas parler."
         dialogue = self.dialogues[self.dialogue_index]
         self.dialogue_index = (self.dialogue_index + 1) % len(self.dialogues)
+        self.talked = True
         return f"{self.name} dit : {dialogue}"
 
     def take_damage(self, damage):

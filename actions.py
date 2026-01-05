@@ -15,6 +15,9 @@ class Actions:
         if player.move(list_of_words[1]):
             # Déplacer les PNJ après le mouvement du joueur
             game.move_npcs()
+            # Vérifier les quêtes de lieux
+            for quest in game.quests:
+                quest.check_completion(game)
             # Afficher la description mise à jour
             print(player.current_room.get_long_description())
             return True
@@ -106,6 +109,9 @@ class Actions:
         current_room.remove_item(item)
         player.add_item_to_inventory(item)
         print(f"\nVous avez pris : {item.name}\n")
+        # Vérifier les quêtes d'objets
+        for quest in game.quests:
+            quest.check_completion(game)
         return True
     
     @staticmethod
@@ -156,6 +162,9 @@ class Actions:
             return False
         
         print(f"\n{npc.talk()}\n")
+        # Vérifier les quêtes de PNJ
+        for quest in game.quests:
+            quest.check_completion(game)
         return True
     
     @staticmethod
@@ -231,47 +240,6 @@ class Actions:
         return True
     
     @staticmethod
-    def déplacer(game, list_of_words, number_of_parameters):
-        """Déplace un PNJ vers une pièce spécifique"""
-        if len(list_of_words) != number_of_parameters + 1:
-            print("\nLa commande 'déplacer' prend 2 paramètres : <pnj> <pièce>.\n")
-            return False
-        
-        npc_name = list_of_words[1]
-        room_name = list_of_words[2]
-        
-        # Trouver le PNJ dans toutes les pièces
-        npc = None
-        current_room = None
-        for room in game.rooms:
-            npc = room.get_npc_by_name(npc_name)
-            if npc:
-                current_room = room
-                break
-        
-        if not npc:
-            print(f"\nLe PNJ '{npc_name}' n'existe pas.\n")
-            return False
-        
-        # Trouver la pièce cible
-        target_room = None
-        for room in game.rooms:
-            if room.name.lower() == room_name.lower():
-                target_room = room
-                break
-        
-        if not target_room:
-            print(f"\nLa pièce '{room_name}' n'existe pas.\n")
-            return False
-        
-        if current_room:
-            current_room.remove_npc(npc)
-        target_room.add_npc(npc)
-        
-        print(f"\n{npc.name} a été déplacé vers {target_room.name}.\n")
-        return True
-    
-    @staticmethod
     def listPNJ(game, list_of_words, number_of_parameters):
         """Liste tous les PNJ et leur position"""
         if len(list_of_words) != number_of_parameters + 1:
@@ -319,4 +287,18 @@ class Actions:
         else:
             print(f"\nVous utilisez {item.name}, mais rien ne se passe.\n")
         
+        return True
+    
+    @staticmethod
+    def quests(game, list_of_words, number_of_parameters):
+        """Affiche la liste des quêtes"""
+        if len(list_of_words) != number_of_parameters + 1:
+            print(MSG0.format(command_word=list_of_words[0]))
+            return False
+        
+        print("\n=== Quêtes ===")
+        for quest in game.quests:
+            status = "✓ Complétée" if quest.completed else "En cours"
+            print(f"- {quest.name}: {quest.description} [{status}]")
+        print("===============\n")
         return True

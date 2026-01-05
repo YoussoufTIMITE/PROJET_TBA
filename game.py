@@ -5,6 +5,7 @@ from command import Command
 from actions import Actions
 from item import Item
 from npc import NPC
+from quest import Quest
 import random
 
 class Game:
@@ -15,6 +16,7 @@ class Game:
         self.commands = {}
         self.player = None
         self.ghost_defeated = False
+        self.quests = []
 
     def setup(self):
         # Commands
@@ -31,9 +33,9 @@ class Game:
         self.commands["wait"] = Command("wait", " : attendre un tour (fait bouger les PNJ)", Actions.wait, 0)
         self.commands["attack"] = Command("attack", " <pnj> : attaquer un PNJ", Actions.attack, 1)
         self.commands["status"] = Command("status", " : vérifier votre état", Actions.status, 0)
-        self.commands["déplacer"] = Command("déplacer", " <pnj> <pièce> : déplacer un PNJ vers une pièce", Actions.déplacer, 2)
         self.commands["listPNJ"] = Command("listPNJ", " : lister tous les PNJ et leur position", Actions.listPNJ, 0)
         self.commands["use"] = Command("use", " <objet> : utiliser un objet de l'inventaire", Actions.use, 1)
+        self.commands["quests"] = Command("quests", " : afficher les quêtes", Actions.quests, 0)
 
         # Rooms
         entree = Room("Entrée", "à l’entrée de votre univers. Une lourde porte se referme derrière vous.")
@@ -83,6 +85,13 @@ class Game:
         cave.exits = {"N": labyrinthe, "E": chambre_gardien}
         labyrinthe.exits = {"E": hall, "S": chambre_gardien}
         chambre_gardien.exits = {"O": cave}
+
+        # Quests
+        quest_location = Quest("Explorer le Bureau", "Visitez le Bureau pour découvrir des secrets.", "location", "Bureau", "Vous avez trouvé des indices importants !")
+        quest_item = Quest("Collecter la Clé", "Ramassez la clé dans l'Entrée.", "item", "clé", "La clé vous permettra d'ouvrir des portes.")
+        quest_npc = Quest("Parler au Marchand", "Discutez avec le Marchand dans le Hall.", "npc", "Marchand", "Le Marchand vous a donné des conseils précieux.")
+
+        self.quests.extend([quest_location, quest_item, quest_npc])
 
         # Player
         name = input("Entrez votre nom: ")
