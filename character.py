@@ -17,7 +17,9 @@ class Character:
             return f"{self.name} est mort et ne peut pas parler."
         dialogue = self.dialogues[self.dialogue_index]
         self.dialogue_index = (self.dialogue_index + 1) % len(self.dialogues)
-        self.talked = True
+        # Marquer comme parlé seulement une fois
+        if not self.talked:
+            self.talked = True
         return f"{self.name} dit : {dialogue}"
 
     def take_damage(self, damage):

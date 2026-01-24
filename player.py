@@ -78,10 +78,16 @@ class Player:
         items_str = ", ".join([item.name for item in self.inventory])
         return f"Inventaire : {items_str}"
 
+    def heal(self, amount):
+        """Soigne le joueur jusqu'à 100 HP max"""
+        self.health = min(100, self.health + amount)
+        return f"Vous êtes soigné. Vous avez maintenant {self.health} PV."
+
     def take_damage(self, damage):
         """Inflige des dégâts au joueur"""
         self.health -= damage
         if self.health <= 0:
+            self.health = 0
             return f"{self.name} est mort !"
         return f"{self.name} a {self.health} PV restants."
 

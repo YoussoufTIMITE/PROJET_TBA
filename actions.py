@@ -46,7 +46,7 @@ class Actions:
         return True
 
     @staticmethod
-    def historik(game, list_of_words, number_of_parameters):
+    def historique(game, list_of_words, number_of_parameters):
         # Vérifie si le nombre d'arguments est correct
         if len(list_of_words) != number_of_parameters + 1:
             command_word = list_of_words[0]
@@ -74,7 +74,7 @@ class Actions:
             return False
 
         # Retire la pièce courante de l'historique et revient à la précédente
-        player.history.pop()
+        current_room = player.history.pop()
         previous_room = player.history[-1]
         player.current_room = previous_room
         print(f"\nVous revenez à '{player.current_room.name}'")
@@ -201,7 +201,8 @@ class Actions:
             return False
 
         # Attaque du joueur
-        damage_to_npc = 20  # dégâts fixes pour simplicité
+        import random
+        damage_to_npc = random.randint(15, 25)  # dégâts aléatoires
         result = npc.take_damage(damage_to_npc)
         print(f"\nVous attaquez {npc.name} et infligez {damage_to_npc} dégâts. {result}\n")
 
@@ -210,22 +211,32 @@ class Actions:
             if npc.name == "Fantome":
                 game.ghost_defeated = True
                 print("Le Fantôme est vaincu ! Vous pouvez maintenant affronter le Gardien.")
+                # Vérifier les quêtes de defeat
+                for quest in getattr(game, 'quests', []):
+                    quest.check_completion(game)
             elif npc.name == "Gardien":
                 if game.ghost_defeated:
                     print("Félicitations ! Vous avez vaincu le Gardien et gagné le jeu !")
+                    # Vérifier les quêtes de defeat
+                    for quest in getattr(game, 'quests', []):
+                        quest.check_completion(game)
                     game.finished = True
                 else:
                     print("Vous devez d'abord vaincre le Fantôme avant le Gardien !")
-                    # Remettre le Gardien en vie ou quelque chose, mais pour simplicité, juste message
+                    # Remettre le Gardien en vie pour que le joueur réessaie après
+                    npc.health = 100
+                    npc.is_alive = True
+                    current_room.add_npc(npc)
+                    return True
             return True
 
         # Contre-attaque du PNJ
-        damage_to_player = 15
+        damage_to_player = random.randint(10, 20)  # dégâts aléatoires
         result_player = player.take_damage(damage_to_player)
         print(f"{npc.name} contre-attaque et vous inflige {damage_to_player} dégâts. {result_player}\n")
 
         if player.health <= 0:
-            print("Vous êtes mort ! Game over.\n")
+            print("Vous êtes mort ! Le jeu est terminé. Vous avez perdu !\n")
             game.finished = True
 
         return True
@@ -251,8 +262,8 @@ class Actions:
         print("\nListe des PNJ :")
         for room in game.rooms:
             for npc in room.npcs:
-                status = "vivant" if npc.is_alive else "mort"
-                print(f"  - {npc.name} ({status}) dans {room.name}")
+                if npc.is_alive:
+                    print(f"  - {npc.name} (vivant) dans {room.name}")
         print()
         return True
 
@@ -280,7 +291,7 @@ class Actions:
             print("\nLe livre contient des légendes anciennes : 'Pour sortir, bats le Fantôme spectral, puis le Gardien immortel.'\n")
         elif item.name.lower() == "torche":
             print("\nLa torche flambe vivement. Sa chaleur vous revigore (+5 PV).\n")
-            player.health = min(100, player.health + 5)
+            print(player.heal(5))
         elif item.name.lower() == "corde":
             print("\nLa corde vous permet de grimper à un point élevé. De là, vous voyez les mouvements des PNJ.\n")
             Actions.listPNJ(game, ["listPNJ"], 0)

@@ -23,7 +23,7 @@ class Game:
         self.commands["help"] = Command("help", " : afficher cette aide", Actions.help, 0)
         self.commands["quit"] = Command("quit", " : quitter le jeu", Actions.quit, 0)
         self.commands["go"] = Command("go", " <direction> : se déplacer", Actions.go, 1)
-        self.commands["historik"] = Command("historik", " : afficher l'historique des pièces", Actions.historik, 0)
+        self.commands["historique"] = Command("historique", " : afficher l'historique des pièces", Actions.historique, 0)
         self.commands["back"] = Command("back", " : revenir à la pièce précédente", Actions.back, 0)
         self.commands["look"] = Command("look", " : observer l'environnement", Actions.look, 0)
         self.commands["take"] = Command("take", " <objet> : prendre un objet", Actions.take, 1)
@@ -69,6 +69,7 @@ class Game:
         gardien = Character("Gardien", "un homme âgé avec une clé", ["Tu as vaincu le Fantôme ? Prouve-le en me battant.", "Je suis le dernier obstacle.", "Vaincs-moi pour gagner !"])
         gardien.health = 100  # plus de vie pour le boss
         marchand = Character("Marchand", "un commerçant ambulant", ["Trouve le Fantôme dans le Souterrain et bats-le.", "Puis cherche le Gardien dans sa Chambre pour le vaincre.", "Bats les deux pour t'échapper !"])
+        marchand.health = 500  # santé très élevée pour le rendre intouchable
         fantome = Character("Fantome", "une apparition translucide", ["Je suis l'esprit du labyrinthe. Bats-moi pour avancer.", "Le Gardien t'attend après moi.", "Vaincs-nous deux pour gagner."])
         fantome.health = 30  # moins de vie
 
@@ -90,8 +91,10 @@ class Game:
         quest_location = Quest("Explorer le Bureau", "Visitez le Bureau pour découvrir des secrets.", "location", "Bureau", "Vous avez trouvé des indices importants !")
         quest_item = Quest("Collecter la Clé", "Ramassez la clé dans l'Entrée.", "item", "clé", "La clé vous permettra d'ouvrir des portes.")
         quest_npc = Quest("Parler au Marchand", "Discutez avec le Marchand dans le Hall.", "npc", "Marchand", "Le Marchand vous a donné des conseils précieux.")
+        quest_fantome = Quest("Vaincre le Fantôme", "Vainquez le Fantôme dans le Souterrain.", "defeat_npc", "Fantome", "Le Fantôme est vaincu ! Vous pouvez maintenant affronter le Gardien.")
+        quest_gardien = Quest("Vaincre le Gardien", "Vainquez le Gardien dans sa Chambre.", "defeat_npc", "Gardien", "Vous avez vaincu le Gardien et gagné le jeu !")
 
-        self.quests.extend([quest_location, quest_item, quest_npc])
+        self.quests.extend([quest_location, quest_item, quest_npc, quest_fantome, quest_gardien])
 
         # Player
         name = input("Entrez votre nom: ")
@@ -106,10 +109,14 @@ class Game:
         for room in self.rooms:
             if room != self.player.current_room:
                 for npc in room.npcs[:]:  # copie pour éviter modification pendant itération
-                    if room.exits and random.random() < 0.2:  # 20% chance de bouger
-                        direction = random.choice(list(room.exits.keys()))
-                        next_room = room.exits[direction]
-                        if next_room is not None:
+                    # Le Marchand ne se déplace pas
+                    if npc.name == "Marchand":
+                        continue
+                    if npc.is_alive and room.exits and random.random() < 0.2:  # 20% chance de bouger
+                        valid_exits = [d for d, r in room.exits.items() if r is not None]
+                        if valid_exits:
+                            direction = random.choice(valid_exits)
+                            next_room = room.exits[direction]
                             room.remove_npc(npc)
                             next_room.add_npc(npc)
                             print(f"{npc.name} se déplace de {room.name} vers {next_room.name}.")
@@ -129,6 +136,12 @@ class Game:
             print("\nAucune commande. Entrez 'help' pour voir les commandes disponibles.\n")
             return
 
+        # Vérifier que le joueur n'est pas mort (sauf pour certaines commandes)
+        if self.player.health <= 0:
+            print("\nVous êtes mort ! Le jeu est terminé. Entrez 'quit' pour quitter.\n")
+            if command_string.strip().lower() != "quit" and command_string.strip().lower() != "status":
+                return
+
         words = command_string.split()
         command_word = words[0]
 
@@ -144,6 +157,18 @@ class Game:
         self.print_welcome()
         while not self.finished:
             self.process_command(input("> "))
+        self.end_game()
+
+    def end_game(self):
+        """Affiche le message de fin du jeu"""
+        if self.player.health <= 0:
+            print("\n" + "="*50)
+            print("GAME OVER - Vous avez été vaincu !")
+            print("="*50 + "\n")
+        else:
+            print("\n" + "="*50)
+            print("VICTOIRE - Vous avez gagné !")
+            print("="*50 + "\n")
 
 def main():
     """ Point d'entrée principal du programme."""
