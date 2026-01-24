@@ -8,7 +8,7 @@ Ce dépôt contient le jeu d'aventure **TBA**, un jeu textuel dans lequel le jou
 
 Ce jeu contient :
 
-- ✅ Un labyrinthe composé de 8 pièces interconnectées
+
 - ✅ 6 objets à ramasser et utiliser
 - ✅ 3 PNJ (Marchand, Fantôme, Gardien) avec dialogues et combats
 - ✅ Un système de 5 quêtes complètes guidant la progression
