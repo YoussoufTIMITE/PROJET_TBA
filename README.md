@@ -4,17 +4,7 @@ Ce dépôt contient le jeu d'aventure **TBA**, un jeu textuel dans lequel le jou
 
 **L'objectif principal :** Progresser à travers le labyrinthe, vaincre le **Fantôme** (premier boss), puis le **Gardien** (boss final) pour gagner la partie.
 
-## 🎮 Description de la version actuelle
 
-Ce jeu contient :
-
-
-
-- ✅ 3 PNJ (Marchand, Fantôme, Gardien) avec dialogues et combats
-- ✅ Un système de 5 quêtes complètes guidant la progression
-- ✅ Dégâts aléatoires en combat pour plus de défi
-- ✅ Un système de points de vie (100 HP max)
-- ✅ Historique de navigation
 
 ## 🎯 Fonctionnalités actuelles
 
