@@ -6,7 +6,7 @@ Ce dépôt contient le jeu d'aventure **TBA**, un jeu textuel dans lequel le jou
 
 ## 🎮 Description de la version actuelle
 
-Cette version est **complètement fonctionnelle et logique** avec :
+Ce jeu contient :
 
 - ✅ Une structure modulaire avec plusieurs classes interconnectées
 - ✅ Un gameplay basé sur des commandes textuelles
@@ -80,6 +80,7 @@ back          - Revenir à la pièce précédente
 La base de code est organisée en plusieurs modules :
 
 - **`game.py`** : Gestion du jeu, configuration, boucle principale, déplacement des PNJ
+- **`gui.py`** : Interface graphique Tkinter (mode graphique)
 - **`room.py`** : Représentation des pièces (sorties, objets, PNJ)
 - **`player.py`** : Gestion du joueur (position, inventaire, santé, historique)
 - **`command.py`** : Définition et exécution des commandes
@@ -90,10 +91,26 @@ La base de code est organisée en plusieurs modules :
 
 ## 🎮 Comment jouer
 
-### Démarrage
+### Démarrage - CLI (Mode texte)
 ```bash
 python3 game.py
 ```
+
+### Démarrage - Interface Graphique (GUI) ✨ NOUVEAU
+```bash
+python3 gui.py
+```
+
+**La GUI Tkinter offre :**
+- 🖼️ Interface graphique moderne avec thème sombre
+- 📍 Affichage en temps réel de la pièce actuelle
+- 🎒 Visualisation de l'inventaire
+- ❤️ Affichage du statut (HP, nom du joueur)
+- 📋 Suivi des quêtes
+- 📜 Historique des messages du jeu
+- ⌨️ Zone de saisie de commandes avec autocomplétion de l'historique
+- 🎮 Boutons d'actions rapides
+- ▲ Navigation dans l'historique des commandes (Haut/Bas)
 
 ### Progression type
 1. **Démarrez** à l'Entrée
@@ -131,11 +148,12 @@ python3 game.py
 - ✅ Dégâts aléatoires pour plus de défi
 - ✅ Vérifications cohérentes de mort du joueur
 - ✅ Système de fin de partie clair (VICTOIRE/GAME OVER)
+- ✅ **NOUVEAU : Interface graphique Tkinter complète**
 
 ## 📝 Limitations actuelles
 
-- Interface exclusivement textuelle
-- Pas d'interface graphique
+- ✅ Interface graphique maintenant disponible !
+- Pas d'interface web
 - Pas d'éléments sonores
 - Comportements des PNJs basiques mais fonctionnels
 
