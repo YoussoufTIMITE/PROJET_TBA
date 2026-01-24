@@ -1,58 +1,154 @@
-# Jeu d’aventure – TBA
+# Jeu d'aventure – TBA
 
-Ce dépôt contient le jeu d’aventure **TBA**, un jeu textuel dans lequel le joueur explore un labyrinthe, collecte des objets, interagit avec des personnages non-joueurs (PNJ) et accomplit des quêtes afin de s’échapper.
+Ce dépôt contient le jeu d'aventure **TBA**, un jeu textuel dans lequel le joueur explore un labyrinthe, collecte des objets, interagit avec des personnages non-joueurs (PNJ) et accomplit des quêtes afin de s'échapper.
 
-L’objectif principal est de progresser à travers différentes pièces, vaincre le **Fantôme**, puis le **Gardien**, pour gagner la partie.
+**L'objectif principal :** Progresser à travers le labyrinthe, vaincre le **Fantôme** (premier boss), puis le **Gardien** (boss final) pour gagner la partie.
 
-## Description de la version actuelle
+## 🎮 Description de la version actuelle
 
-Cette version comprend les éléments suivants :
+Cette version est **complètement fonctionnelle et logique** avec :
 
-- Une structure modulaire avec plusieurs classes et fichiers interconnectés.
-- Un gameplay basé sur des commandes textuelles simples.
-- Un labyrinthe composé de plusieurs pièces interconnectées.
-- Des objets à ramasser et utiliser.
-- Des PNJ avec lesquels le joueur peut dialoguer ou combattre.
-- Un système de quêtes permettant de guider la progression du joueur.
+- ✅ Une structure modulaire avec plusieurs classes interconnectées
+- ✅ Un gameplay basé sur des commandes textuelles
+- ✅ Un labyrinthe composé de 8 pièces interconnectées
+- ✅ 6 objets à ramasser et utiliser
+- ✅ 3 PNJ (Marchand, Fantôme, Gardien) avec dialogues et combats
+- ✅ Un système de 5 quêtes complètes guidant la progression
+- ✅ Dégâts aléatoires en combat pour plus de défi
+- ✅ Un système de points de vie (100 HP max)
+- ✅ Historique de navigation
 
-## Fonctionnalités actuelles
+## 🎯 Fonctionnalités actuelles
 
-- Navigation entre plusieurs pièces.
-- Gestion de l’inventaire du joueur.
-- Interaction avec des objets (ramassage).
-- Dialogues et combats avec des personnages non-joueurs.
-- Système de quêtes avec conditions et récompenses.
-- Commandes textuelles pour interagir avec l’environnement (`go`, `take`, `talk`, `attack`, etc.).
+### Navigation & Exploration
+- Navigation entre 8 pièces (Entrée, Hall, Bureau, Mezzanine, Souterrain, Cave, Labyrinthe, Chambre du gardien)
+- Système d'historique pour tracer le chemin parcouru
+- Commande `back` pour revenir à la pièce précédente
+- Commande `look` pour observer l'environnement
 
-## Limites
+### Gestion de l'inventaire
+- Ramassage et dépôt d'objets
+- 6 objets avec des effets spécifiques :
+  - **Clé** : Déverrouille des indices
+  - **Lampe** : Révèle des informations sur les boss
+  - **Livre** : Explique l'ordre de combat
+  - **Torche** : Soigne le joueur (+5 HP)
+  - **Corde** : Affiche la position des PNJs
+  - **Pioche** : Révèle une info cruciale
 
-- Interface exclusivement textuelle.
-- Comportements des PNJ encore simples.
-- Interactions limitées à des actions prédéfinies.
-- Absence d’éléments graphiques et sonores.
+### Système de PNJs
+- **Marchand (Hall)** : PNJ de guide, immobile, indestructible (500 HP)
+- **Fantôme (Souterrain)** : Premier boss, 30 HP, se déplace aléatoirement
+- **Gardien (Chambre du gardien)** : Boss final, 100 HP, immobile
 
-## Structuration du projet
+### Système de combat
+- Dégâts aléatoires (15-25 pour le joueur, 10-20 pour les PNJ)
+- Contre-attaque des PNJ
+- **Logique d'ordre :** Le Fantôme doit être vaincu EN PREMIER
+  - Si vous attaquez le Gardien avant : il se régénère
+  - Si vous attaquez le Gardien après : victoire finale
 
-La base de code est organisée en plusieurs modules, chacun correspondant à une classe centrale du jeu :
+### Système de quêtes (5 au total)
+1. **Parler au Marchand** - Type: `npc` → Complétée au premier dialogue
+2. **Collecter la Clé** - Type: `item` → Complétée au ramassage
+3. **Explorer le Bureau** - Type: `location` → Complétée à l'arrivée
+4. **Vaincre le Fantôme** - Type: `defeat_npc` → Complétée à la victoire
+5. **Vaincre le Gardien** - Type: `defeat_npc` → Complétée à la victoire
 
-- `game.py` / `Game` : gestion de l’environnement du jeu, configuration et boucle principale ;
-- `room.py` / `Room` : représentation des lieux (nom, description, sorties, objets, PNJ) ;
-- `player.py` / `Player` : gestion du joueur (position, inventaire, santé, historique) ;
-- `command.py` / `Command` : définition et exécution des commandes ;
-- `actions.py` / `Actions` : gestion des interactions (déplacement, prise d’objets, dialogues, combats, etc.) ;
-- `item.py` / `Item` : représentation des objets du jeu ;
-- `character.py` / `NPC` : gestion des personnages non-joueurs (dialogues, santé) ;
-- `quest.py` / `Quest` : gestion des quêtes (objectifs, conditions, récompenses).
+### Commandes disponibles
+```
+help          - Afficher cette aide
+quit          - Quitter le jeu
+go <dir>      - Se déplacer (N/S/E/O/U/D)
+look          - Observer l'environnement
+take <objet>  - Prendre un objet
+drop <objet>  - Poser un objet
+inventory     - Vérifier son inventaire
+status        - Vérifier votre santé
+talk <pnj>    - Parler à un PNJ
+attack <pnj>  - Attaquer un PNJ
+wait          - Attendre (déplace les PNJs)
+use <objet>   - Utiliser un objet
+listPNJ       - Lister tous les PNJs vivants
+historique    - Voir les pièces visitées
+quests        - Afficher les quêtes
+back          - Revenir à la pièce précédente
+```
 
-## Comment jouer
+## 📁 Structuration du projet
 
-Lancez le jeu avec la commande suivante :
+La base de code est organisée en plusieurs modules :
 
+- **`game.py`** : Gestion du jeu, configuration, boucle principale, déplacement des PNJ
+- **`room.py`** : Représentation des pièces (sorties, objets, PNJ)
+- **`player.py`** : Gestion du joueur (position, inventaire, santé, historique)
+- **`command.py`** : Définition et exécution des commandes
+- **`actions.py`** : Gestion de toutes les interactions (déplacement, combats, etc.)
+- **`item.py`** : Représentation des objets
+- **`character.py`** : Gestion des PNJ (dialogues, santé, déplacements)
+- **`quest.py`** : Gestion des quêtes (4 types : location, item, npc, defeat_npc)
+
+## 🎮 Comment jouer
+
+### Démarrage
 ```bash
-python game.py
+python3 game.py
+```
 
--À venir
+### Progression type
+1. **Démarrez** à l'Entrée
+2. **Allez au Hall** et parlez au Marchand (quête 1)
+3. **Ramassez la Clé** à l'Entrée (quête 2)
+4. **Explorez le Bureau** (quête 3)
+5. **Allez au Souterrain** et battez le Fantôme (quête 4)
+6. **Allez à la Chambre du Gardien** et battez le Gardien (quête 5 + VICTOIRE)
 
-Ajout d’objets interactifs et d’événements dynamiques. -Implémentation d’une intelligence artificielle basique pour les PNJ. Amélioration des graphismes et de l’interface utilisateur. -Développement de scénarios immersifs et personnalisés.
+### Objets utiles
+- Utilisez la **Torche** si votre santé baisse
+- Utilisez la **Corde** pour localiser les PNJs
+- Lisez le **Livre** pour les indices
 
-Merci de votre intérêt pour ce projet ! Toutes les suggestions ou contributions sont les bienvenues. 😊
+## 📊 Logique du jeu
+
+### Système de victoire
+- **Condition 1 :** Vous devez vaincre le Fantôme EN PREMIER
+- **Condition 2 :** Puis vaincre le Gardien
+- **Résultat :** "VICTOIRE - Vous avez gagné !"
+
+### Système de défaite
+- Si votre santé ≤ 0 : "GAME OVER - Vous avez été vaincu !"
+
+### Déplacement des PNJs
+- Les PNJs (sauf Marchand et Gardien) ont 20% de chance de se déplacer par tour
+- Ils ne se déplacent qu'entre les pièces avec des sorties valides
+- Ils ne se déplacent pas dans la pièce du joueur
+
+## 🔧 Améliorations récentes
+
+- ✅ Correction complète de la logique du jeu
+- ✅ Ajout de quêtes de défaite (defeat_npc)
+- ✅ Protection du Marchand (santé 500, immobile)
+- ✅ Dégâts aléatoires pour plus de défi
+- ✅ Vérifications cohérentes de mort du joueur
+- ✅ Système de fin de partie clair (VICTOIRE/GAME OVER)
+
+## 📝 Limitations actuelles
+
+- Interface exclusivement textuelle
+- Pas d'interface graphique
+- Pas d'éléments sonores
+- Comportements des PNJs basiques mais fonctionnels
+
+## 🚀 Améliorations futures
+
+- Ajout de nouveaux types de quêtes
+- Implémentation d'une intelligence artificielle plus avancée pour les PNJ
+- Interface graphique (pygame, tkinter, etc.)
+- Système de sauvegarde/chargement
+- Niveaux de difficulté
+- Plus de zones à explorer
+- Système de magie/compétences
+
+## 📄 Licence
+
+Ce projet est open-source. Toutes les suggestions ou contributions sont les bienvenues ! 😊
