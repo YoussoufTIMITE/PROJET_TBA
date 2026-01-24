@@ -88,11 +88,9 @@ La base de code est organisée en plusieurs modules :
 - **`character.py`** : Gestion des PNJ (dialogues, santé, déplacements)
 - **`quest.py`** : Gestion des quêtes (4 types : location, item, npc, defeat_npc)
 
-## 🎮 Comment jouer
-
 ### Démarrage
 ```bash
-python3 game.py
+python game.py
 ```
 
 ### Progression type
