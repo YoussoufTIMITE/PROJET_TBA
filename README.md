@@ -133,7 +133,6 @@ python game.py
 ## 📝 Limitations actuelles
 
 - Interface exclusivement textuelle
-- Pas d'interface graphique
 - Pas d'éléments sonores
 - Comportements des PNJs basiques mais fonctionnels
 
