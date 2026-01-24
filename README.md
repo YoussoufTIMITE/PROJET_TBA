@@ -8,7 +8,6 @@ Ce dépôt contient le jeu d'aventure **TBA**, un jeu textuel dans lequel le jou
 
 Ce jeu contient :
 
-- ✅ Une structure modulaire avec plusieurs classes interconnectées
 - ✅ Un gameplay basé sur des commandes textuelles
 - ✅ Un labyrinthe composé de 8 pièces interconnectées
 - ✅ 6 objets à ramasser et utiliser
