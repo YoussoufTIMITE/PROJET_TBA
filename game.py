@@ -102,6 +102,7 @@ class Game:
 
     def move_npcs(self):
         """Déplace les PNJ de manière aléatoire, sauf dans la pièce actuelle du joueur"""
+        moved = False
         for room in self.rooms:
             if room != self.player.current_room:
                 for npc in room.npcs[:]:  # copie pour éviter modification pendant itération
@@ -112,6 +113,9 @@ class Game:
                             room.remove_npc(npc)
                             next_room.add_npc(npc)
                             print(f"{npc.name} se déplace de {room.name} vers {next_room.name}.")
+                            moved = True
+        if not moved:
+            print("Aucun PNJ ne s'est déplacé ce tour.")
 
     def print_welcome(self):
         print(f"\nBienvenue {self.player.name} dans cette aventure mystérieuse !")
