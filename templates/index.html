@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'aventure - TBA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <h1>⚔️ JEU D'AVENTURE - TBA ⚔️</h1>
+            <p>Un labyrinthe mystérieux vous attend...</p>
+        </header>
+
+        <!-- START MENU -->
+        <div id="startMenu" class="menu-screen">
+            <div class="menu-box">
+                <h2>Bienvenue dans TBA</h2>
+                <p>Explorez un labyrinthe, affrontez des créatures et cherchez à vous échapper !</p>
+                
+                <div class="input-group">
+                    <label for="playerName">Votre nom :</label>
+                    <input type="text" id="playerName" placeholder="Entrez votre nom" value="Aventurier">
+                </div>
+                
+                <button class="btn btn-start" onclick="startGame()">🎮 COMMENCER</button>
+            </div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" class="game-screen" style="display: none;">
+            <div class="main-content">
+                <!-- GAUCHE -->
+                <div class="left-panel">
+                    <!-- Pièce -->
+                    <div class="panel">
+                        <h3>📍 PIÈCE ACTUELLE</h3>
+                        <div id="roomInfo" class="content">
+                            <p id="roomName" class="room-name"></p>
+                            <p id="roomDesc" class="room-desc"></p>
+                            <p id="roomExits" class="room-exits"></p>
+                            <div id="roomItems" class="items-list"></div>
+                            <div id="roomNPCs" class="npcs-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Inventaire -->
+                    <div class="panel">
+                        <h3>🎒 INVENTAIRE</h3>
+                        <div id="inventoryContent" class="content inventory-list">
+                            <p class="empty">Vide</p>
+                        </div>
+                    </div>
+
+                    <!-- Quêtes -->
+                    <div class="panel">
+                        <h3>📋 QUÊTES</h3>
+                        <div id="questsContent" class="content quests-list"></div>
+                    </div>
+                </div>
+
+                <!-- DROITE -->
+                <div class="right-panel">
+                    <!-- Statut -->
+                    <div class="panel">
+                        <h3>❤️ STATUT</h3>
+                        <div class="status-content">
+                            <p><strong id="playerNameDisplay"></strong></p>
+                            <div class="health-bar">
+                                <div id="healthFill" class="health-fill" style="width: 100%;"></div>
+                            </div>
+                            <p id="healthText" class="health-text">100/100 HP</p>
+                            <p id="currentRoomStatus"></p>
+                        </div>
+                    </div>
+
+                    <!-- Historique -->
+                    <div class="panel">
+                        <h3>📜 HISTORIQUE</h3>
+                        <div id="messageHistory" class="content message-history"></div>
+                    </div>
+
+                    <!-- Commandes -->
+                    <div class="panel">
+                        <h3>⌨️ COMMANDE</h3>
+                        <div class="input-group">
+                            <input type="text" id="commandInput" placeholder="Entrez une commande..." onkeypress="handleKeyPress(event)">
+                            <button class="btn btn-small" onclick="sendCommand()">▶ ENVOYER</button>
+                        </div>
+                    </div>
+
+                    <!-- Actions rapides -->
+                    <div class="panel">
+                        <h3>🎮 ACTIONS RAPIDES</h3>
+                        <div class="quick-buttons">
+                            <button class="btn btn-quick" onclick="quickCommand('help')">Aide</button>
+                            <button class="btn btn-quick" onclick="quickCommand('inventory')">Inventaire</button>
+                            <button class="btn btn-quick" onclick="quickCommand('status')">État</button>
+                            <button class="btn btn-quick" onclick="quickCommand('quests')">Quêtes</button>
+                            <button class="btn btn-quick" onclick="quickCommand('listPNJ')">PNJ</button>
+                            <button class="btn btn-quick" onclick="quickCommand('wait')">Attendre</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM BUTTONS -->
+            <div class="bottom-buttons">
+                <button class="btn btn-quit" onclick="quitGame()">❌ QUITTER</button>
+            </div>
+        </div>
+
+        <!-- END SCREEN -->
+        <div id="endScreen" class="menu-screen" style="display: none;">
+            <div class="menu-box">
+                <h2 id="endTitle"></h2>
+                <p id="endMessage"></p>
+                <button class="btn btn-start" onclick="location.reload()">🔄 NOUVELLE PARTIE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
