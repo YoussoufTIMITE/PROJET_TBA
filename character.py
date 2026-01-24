@@ -1,6 +1,6 @@
-# npc.py
+# character.py
 
-class NPC:
+class Character:
     def __init__(self, name, description, dialogues=None):
         self.name = name
         self.description = description
