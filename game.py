@@ -4,7 +4,7 @@ from player import Player
 from command import Command
 from actions import Actions
 from item import Item
-from npc import NPC
+from character import Character
 from quest import Quest
 import random
 
@@ -66,10 +66,10 @@ class Game:
         cave.add_item(pioche)
 
         # NPCs
-        gardien = NPC("Gardien", "un homme âgé avec une clé", ["Tu as vaincu le Fantôme ? Prouve-le en me battant.", "Je suis le dernier obstacle.", "Vaincs-moi pour gagner !"])
+        gardien = Character("Gardien", "un homme âgé avec une clé", ["Tu as vaincu le Fantôme ? Prouve-le en me battant.", "Je suis le dernier obstacle.", "Vaincs-moi pour gagner !"])
         gardien.health = 100  # plus de vie pour le boss
-        marchand = NPC("Marchand", "un commerçant ambulant", ["Trouve le Fantôme dans le Souterrain et bats-le.", "Puis cherche le Gardien dans sa Chambre pour le vaincre.", "Bats les deux pour t'échapper !"])
-        fantome = NPC("Fantome", "une apparition translucide", ["Je suis l'esprit du labyrinthe. Bats-moi pour avancer.", "Le Gardien t'attend après moi.", "Vaincs-nous deux pour gagner."])
+        marchand = Character("Marchand", "un commerçant ambulant", ["Trouve le Fantôme dans le Souterrain et bats-le.", "Puis cherche le Gardien dans sa Chambre pour le vaincre.", "Bats les deux pour t'échapper !"])
+        fantome = Character("Fantome", "une apparition translucide", ["Je suis l'esprit du labyrinthe. Bats-moi pour avancer.", "Le Gardien t'attend après moi.", "Vaincs-nous deux pour gagner."])
         fantome.health = 30  # moins de vie
 
         chambre_gardien.add_npc(gardien)

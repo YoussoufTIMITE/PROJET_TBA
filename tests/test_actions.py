@@ -3,7 +3,7 @@ import pytest
 from player import Player
 from room import Room
 from actions import Actions
-from npc import NPC
+from character import Character
 from item import Item
 
 
@@ -65,7 +65,7 @@ def test_back_no_previous():
 
 def test_talk_to_npc():
     room = Room("TestRoom", "desc")
-    npc = NPC("TestNPC", "desc", ["Hello!", "How are you?"])
+    npc = Character("TestNPC", "desc", ["Hello!", "How are you?"])
     room.add_npc(npc)
 
     p = Player("TestPlayer")
@@ -152,7 +152,7 @@ def test_inventory():
 
 def test_attack_npc():
     room = Room("TestRoom", "desc")
-    npc = NPC("TestNPC", "desc", ["Hello!"])
+    npc = Character("TestNPC", "desc", ["Hello!"])
     npc.health = 50
     room.add_npc(npc)
 
